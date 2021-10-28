@@ -1,9 +1,12 @@
 # Imports definition
 import numpy as np
+from scipy.special import softmax
 
 # Constants definition
 LEARNING_RATE = 0.1
 
+# Resources used
+# https://towardsdatascience.com/derivative-of-the-softmax-function-and-the-categorical-cross-entropy-loss-ffceefc081d1
 
 # ----------------------------------------------------- INIT FUNC ---------------------------------------------------- #
 
@@ -14,7 +17,7 @@ def activation_function(matrix):
     :param matrix: matrix to be updated
     :return: matrix with updated values
     """
-    return np.tanh(matrix)
+    return softmax(matrix)
 
 
 def derived_activation_function(matrix):
@@ -23,12 +26,18 @@ def derived_activation_function(matrix):
     :param matrix: matrix to be updated
     :return: matrix with updated values
     """
-    return np.subtract(np.ones(matrix.shape), np.power(np.tanh(matrix), 2))
+
+    # Reshape the 1-d softmax to 2-d so that np.dot will do the matrix multiplication and get the softmax jacobian mtx
+    tmp = matrix.reshape(-1, 1)
+    jacobian = np.diagflat(tmp) - np.dot(tmp, tmp.T)
+
+    # Fetches first column
+    return jacobian[:, [0]]
 
 
 def derived_error_function(output_matrix, target_matrix):
     """
-    * Applies derived squared error loss function to input elements
+    * Applies derived cross entropy loss function to input elements
     :param output_matrix: obtained output
     :param target_matrix: expected output
     :return: matrix with error between output and target
