@@ -26,13 +26,8 @@ def derived_activation_function(matrix):
     :param matrix: matrix to be updated
     :return: matrix with updated values
     """
-
-    # Reshape the 1-d softmax to 2-d so that np.dot will do the matrix multiplication and get the softmax jacobian mtx
-    tmp = matrix.reshape(-1, 1)
-    jacobian = np.diagflat(tmp) - np.dot(tmp, tmp.T)
-
-    # Fetches first column
-    return jacobian[:, [0]]
+    tmp = matrix.reshape(-1, 1)  # Reshape the 1-d softmax to 2-d so that np.dot will do the matrix multiplication
+    return (np.diagflat(tmp) - np.dot(tmp, tmp.T))[:, [0]]
 
 
 def derived_error_function(output_matrix, target_matrix):
