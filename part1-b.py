@@ -27,7 +27,7 @@ def derived_activation_function(matrix):
     :param matrix: matrix to be updated
     :return: matrix with updated values
     """
-    tmp = matrix.reshape(-1, 1)  # Reshape the 1-d softmax to 2-d so that np.dot will do the matrix multiplication
+    tmp = softmax(matrix).reshape(-1, 1)  # Reshape the 1-d softmax to 2-d so that np.dot will do the mtx multiplication
     return (np.diagflat(tmp) - np.dot(tmp, tmp.T))[:, [0]]
 
 
