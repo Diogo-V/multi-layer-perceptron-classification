@@ -39,6 +39,7 @@ def derived_error_function(output_matrix, target_matrix):
     """
     return np.subtract(output_matrix, target_matrix)
 
+
 # ----------------------------------------------------- INIT VARS ---------------------------------------------------- #
 
 
