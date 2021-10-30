@@ -8,6 +8,7 @@ LEARNING_RATE = 0.1
 # Resources used
 # https://towardsdatascience.com/derivative-of-the-softmax-function-and-the-categorical-cross-entropy-loss-ffceefc081d1
 
+
 # ----------------------------------------------------- INIT FUNC ---------------------------------------------------- #
 
 
