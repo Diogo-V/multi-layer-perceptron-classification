@@ -12,23 +12,28 @@ LEARNING_RATE = 0.1
 # ----------------------------------------------------- INIT FUNC ---------------------------------------------------- #
 
 
-def activation_function(matrix):
+def activation_function(matrix, iteration):
     """
     * Applies activation function to each element in input matrix
     :param matrix: matrix to be updated
+    :param iteration: current layer iteration
     :return: matrix with updated values
     """
-    return softmax(matrix)
+    return softmax(matrix) if iteration == 3 else np.tanh(matrix)
 
 
-def derived_activation_function(matrix):
+def derived_activation_function(matrix, iteration):
     """
     * Applies derived activation function to each element in input matrix
     :param matrix: matrix to be updated
+    :param iteration: current layer iteration
     :return: matrix with updated values
     """
-    tmp = softmax(matrix).reshape(-1, 1)  # Reshape the 1-d softmax to 2-d so that np.dot will do the mtx multiplication
-    return (np.diagflat(tmp) - np.dot(tmp, tmp.T))[:, [0]]
+    if iteration == 3:
+        tmp = softmax(matrix).reshape(-1, 1)  # Reshape the 1-d softmax to 2-d so that np.dot will do the mtx mux
+        return np.diagflat(tmp) - np.dot(tmp, tmp.T)
+    else:
+        return np.subtract(np.ones(matrix.shape), np.power(np.tanh(matrix), 2))
 
 
 def derived_error_function(output_matrix, target_matrix):
@@ -118,7 +123,7 @@ for i in range(1, 4):
 
     # Calculates both outputs
     out = np.add(np.matmul(w[i], x[i - 1]), b[i])
-    out_act = activation_function(out)
+    out_act = activation_function(out, i)
 
     print(f"Out -> Z[{i}]: \n{out}")
     print(f"Out Act -> X[{i}]: \n{out_act}")
@@ -144,14 +149,8 @@ for i in range(3, 0, -1):
         print(f"X[{i}]: \n{x[i]}")
         print(f"Z[{i}]: \n{z[i]}")
 
-        # Calculates both multiplication parameters and prints them
-        error = derived_error_function(x[i], target)
-        act = derived_activation_function(z[i])
-        print(f"Error matrix: \n{error}")
-        print(f"Act matrix: \n{act}")
-
-        # Calculates delta for the last layer, prints and appends it to be used in further calculations
-        result = np.multiply(error, act)
+        # Gets the delta for this layer
+        result = np.subtract(x[i], target)
         print(f"Resulting delta: \n{result}")
         d.append(result)
 
@@ -164,7 +163,7 @@ for i in range(3, 0, -1):
 
         # Performs both multiplication parameters and prints them
         error = np.matmul(w[i + 1].transpose(), d[1])
-        act = derived_activation_function(z[i])
+        act = derived_activation_function(z[i], i)
         print(f"Error matrix: \n{error}")
         print(f"Act matrix: \n{act}")
 
